@@ -1,0 +1,91 @@
+﻿@model Desafio_Desenvolvimento.Core.PaginatedList<Desafio_Desenvolvimento.Application.ViewModel.ProcessoViewModel>
+
+@{
+    ViewData["Title"] = "Processos";
+}
+
+<h2>Processos</h2>
+
+<div class="d-flex justify-content-end">
+    <a asp-action="Cadastrar" class="btn btn-primary">Cadastrar Novo Processo</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>NPU</th>
+            <th>Data de Cadastro</th>
+            <th>UF</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Items.Any())
+        {
+            foreach (var processo in Model.Items)
+            {
+                <tr>
+                    <td>@processo.Npu</td>
+                    <td>@processo.DataCadastro.ToString("dd/MM/yyyy")</td>
+                    <td>@processo.UF</td>
+                    <td>
+                        <a asp-action="Visualizar" asp-route-id="@processo.Id" class="btn btn-info">Visualizar</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="8" class="text-center">Nenhum processo encontrado.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <nav class="d-flex">
+        <ul class="pagination me-3">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize">Anterior</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                </li>
+            }
+
+            @if (Model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index" asp-route-pageIndex="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize">Próximo</a>
+                </li>
+            }
+        </ul>
+        <div>
+            <label for="PageSize">Exibir:</label>
+            <select id="PageSize" class="form-control d-inline" style="width: auto;" onchange="atualizarPageSize()">
+                @foreach (var size in new int[] { 5, 10, 20, 50 })
+                {
+                    <option value="@size" selected=@(Model.PageSize == size)>@size</option>
+                }
+            </select>
+        </div>
+    </nav>
+</div>
+
+@section scripts 
+{
+    <script>
+        function atualizarPageSize() {
+            var pageSize = document.getElementById("PageSize").value;
+            var currentUrl = window.location.href.split('?')[0]; 
+            window.location.href = currentUrl + '?pageSize=' + pageSize + '&pageIndex=1';
+        }
+    </script>
+}
