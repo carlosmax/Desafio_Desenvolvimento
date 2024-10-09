@@ -39,17 +39,18 @@ namespace Desafio_Desenvolvimento.Web
         {
             CarregarUFs();
 
-            return View();
-        }
-
-        
+            return View(new CadastrarProcessoCommand());
+        }               
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cadastrar(CadastrarProcessoCommand command)
         {
             if (!ModelState.IsValid)
+            {
+                CarregarUFs();
                 return View(command);
+            }
 
             var result = await _cadastrarProcessoHandler.HandleAsync(command);
 

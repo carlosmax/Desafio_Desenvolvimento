@@ -38,25 +38,31 @@
         <button type="submit" class="btn btn-primary me-3">Cadastrar</button>
         <a asp-action="Index" class="btn btn-secondary">Voltar para a lista</a>        
     </div>
+
+    <input type="hidden" id="selectedUf" value="@Model.Uf" />
+    <input type="hidden" id="selectedMunicipio" value="@Model.MunicipioCodigo" />
 </form>
 
 @section scripts 
 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
     <script>
-        function carregarMunicipios() {
-            var uf = $("#Uf").val();
+        function carregarMunicipios(ufSelecionado = null, municipioSelecionado = null) {
+            var uf = ufSelecionado || $("#Uf").val();
             $("#MunicipioCodigo").prop("disabled", true).empty().append('<option value="">Selecione um município</option>');
 
             if (uf) {
                 $.ajax({
                     url: '/Municipios/' + uf,
                     type: 'GET',
-                    data: { uf: uf },
                     success: function (data) {
                         data.forEach(function (municipio) {
                             $('#MunicipioCodigo').append('<option value="' + municipio.id + '">' + municipio.nome + '</option>');
                         });
+
+                        if (municipioSelecionado) {
+                            $('#MunicipioCodigo').val(municipioSelecionado);
+                        }
 
                         $("#MunicipioCodigo").prop("disabled", false);
                     },
@@ -73,6 +79,13 @@
         }
 
         $(document).ready(function () {
+            var uf = $("#selectedUf").val();
+            var municipioSelecionado = $("#selectedMunicipio").val();
+
+            if (uf) {
+                carregarMunicipios(uf, municipioSelecionado);
+            }
+
             $('#Npu').inputmask('9999999-99.9999.9.99.9999');
         });
     </script>
