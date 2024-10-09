@@ -28,7 +28,7 @@ A aplicação já vem com um banco de dados SQLite pré-configurado e com dados 
 Clone este repositório em sua máquina local:
 
 ```bash
-  git clone https://github.com/seu_usuario/desafio-desenvolvimento.git
+  git clone https://github.com/carlosmax/desafio-desenvolvimento.git
   cd desafio-desenvolvimento
 ```
 
